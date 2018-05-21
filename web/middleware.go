@@ -310,6 +310,7 @@ func ActiveServerMW(inner http.Handler) http.Handler {
 		fullGuild := &discordgo.Guild{
 			ID:   userGuild.ID,
 			Name: userGuild.Name,
+			Icon: userGuild.Icon,
 		}
 
 		entry := CtxLogger(ctx).WithField("g", fullGuild.ID)
