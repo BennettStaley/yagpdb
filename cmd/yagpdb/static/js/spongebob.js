@@ -31,71 +31,101 @@ $(function(){
     	navigateToAnchor(window.location.hash);
     }
 
+   	updateSelectedMenuItem(window.location.pathname);
+
    	// Update all dropdowns
 	// $(".btn-group .dropdown-menu").dropdownUpdate();
 })
 
 var currentlyLoading = false;
 function navigate(url, method, data, updateHistory){
-	    if (currentlyLoading) {return;}
-	    currentlyLoading = true;
-	    var evt = new CustomEvent('customnavigate', { url: url });
-		window.dispatchEvent(evt);
+    if (currentlyLoading) {return;}
 
-		if (url[0] !== "/") {
-			url = window.location.pathname + url;
-		}
+    $("#main-content").html('<div class="loader">Loading...</div>');
+    
+    currentlyLoading = true;
+    var evt = new CustomEvent('customnavigate', { url: url });
+	window.dispatchEvent(evt);
 
-		console.log("Navigating to "+url);
-		var shownURL = url;
-		// Add the partial param
-		var index = url.indexOf("?")
-		if (index !== -1) {
-			url += "&partial=1"	
-		}else{
-			url += "?partial=1"	
-		}
-
-		var req = new XMLHttpRequest();
-        req.addEventListener("load", function(){
-        	currentlyLoading = false;
-			if (this.status != 200) {
-            	window.location.href = '/';
-            	return;
-			}
-
-			$("#main-content").html(this.responseText);
-			if (updateHistory) {	
-				window.history.pushState("", "", shownURL);
-			}
-			lastLoc = shownURL;
-			lastHash = window.location.hash;
-				
-
-			updateSelectedMenuItem();
-			addListeners(true);
-			
-			if (typeof ga !== 'undefined') {
-				ga('send', 'pageview', window.location.pathname);
-				console.log("Sent pageview")
-			}
-        });
-
-        req.addEventListener("error", function(){
-            window.location.href = '/';
-            currentlyLoading = false;
-        });
-
-        req.open(method, url);
-        
-        if (data) {
-            req.setRequestHeader("content-type", "application/x-www-form-urlencoded");
-            req.send(data);
-        }else{
-            req.send();
-        }
+	if (url[0] !== "/") {
+		url = window.location.pathname + url;
 	}
 
+	console.log("Navigating to "+url);
+	var shownURL = url;
+	// Add the partial param
+	var index = url.indexOf("?")
+	if (index !== -1) {
+		url += "&partial=1"	
+	}else{
+		url += "?partial=1"	
+	}
+
+	updateSelectedMenuItem(url);
+
+	var req = new XMLHttpRequest();
+    req.addEventListener("load", function(){
+    	currentlyLoading = false;
+		if (this.status != 200) {
+        	window.location.href = '/';
+        	return;
+		}
+
+		$("#main-content").html(this.responseText);
+		if (updateHistory) {	
+			window.history.pushState("", "", shownURL);
+		}
+		lastLoc = shownURL;
+		lastHash = window.location.hash;
+			
+		addListeners(true);
+		
+		if (typeof ga !== 'undefined') {
+			ga('send', 'pageview', window.location.pathname);
+			console.log("Sent pageview")
+		}
+    });
+
+    req.addEventListener("error", function(){
+        window.location.href = '/';
+        currentlyLoading = false;
+    });
+
+    req.open(method, url);
+    
+    if (data) {
+        req.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+        req.send(data);
+    }else{
+        req.send();
+    }
+}
+
+// Automatically marks the the menu entry corresponding with our active page as active
+function updateSelectedMenuItem(pathname){
+	// Collapse all nav parents first
+	var navParents = document.querySelectorAll("#menu .nav-parent");
+	for(var i = 0; i < navParents.length; i++){
+		navParents[i].classList.remove("nav-expanded", "nav-active");
+	}
+
+	// Then update the nav links
+	var navLinks = document.querySelectorAll("#menu .nav-link")
+	for(var i = 0; i < navLinks.length; i++){
+		var href = navLinks[i].attributes.getNamedItem("href").value;
+		if(pathname.indexOf(href) !== -1){
+	
+			var collapseParent = navLinks[i].parentElement.parentElement.parentElement;
+			if(collapseParent.classList.contains("nav-parent")){
+				collapseParent.classList.add("nav-expanded", "nav-active");
+			}
+
+			navLinks[i].parentElement.classList.add("nav-active");
+		}else{
+			navLinks[i].parentElement.classList.remove("nav-active");
+		}
+	}
+}
 
 function addAlert(kind, msg){
 	$("<div/>").addClass("row").append(
@@ -118,7 +148,7 @@ function addListeners(partial){
 	////////////////////////////////////////
 	// Async partial page loading handling
 	///////////////////////////////////////
-	$( selectorPrefix + ".nav-link" ).click(function( event ) {
+	$( selectorPrefix + '[data-partial-load="true"]' ).click(function( event ) {
 		console.log("Clicked the link");
 		event.preventDefault();
 		
@@ -128,8 +158,6 @@ function addListeners(partial){
 		
 		var url = link.attr("href");
 		navigate(url, "GET", null, true);
-
-		$("#main-content").html('<div class="loader">Loading...</div>');
 	});
 
 	initializeMultiselect(selectorPrefix);
@@ -251,7 +279,7 @@ function validateChannelDropdown(dropdown, currentElem, channel, perms){
 }
 
 function initializeMultiselect(selectorPrefix){
-	$(selectorPrefix+".multiselect").multiselect();
+	// $(selectorPrefix+".multiselect").multiselect();
 }
 
 function formSubmissionEvents(selectorPrefix){

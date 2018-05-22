@@ -54,19 +54,29 @@
     <!-- Head Libs -->
     <script src="/static/vendor/modernizr/modernizr.js"></script>
 
+    <script src="/static/vendor/jquery/jquery.js"></script>
+
+
     <!-- Sam is an okay guy i think, i was forced to say this -->
     <!-- deus name is actually dave -->
     <!-- What are these comments even they are wasted bandwidth, thats what they are -->
     <!-- The current time is 4:14 am on the 21st of may, maybe i just like adding onto this whenever i come across this section after forgetting about it? -->
 </head>
-<body>
+<body data-loading-overlay>
+    <div id="main-content-loader" class="loading-overlay">
+        <div class="bounce-loader">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+        </div>
+    </div>
     <section class="body">
         {{template "cp_nav_header" .}}
 
         <div class="inner-wrapper">
             {{template "cp_nav_sidebar" .}}
 
-            <section role="main" class="content-body">
+            <section role="main" id="main-content" class="content-body">
 {{end}}{{end}}
 
 {{define "cp_footer"}}{{if not .PartialRequest}}
@@ -83,11 +93,10 @@
     </script>
 
     <!-- Vendor -->
-    <script src="/static/vendor/jquery/jquery.js"></script>
     <script src="/static/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
     <script src="/static/vendor/popper/umd/popper.min.js"></script>
-    <script src="/static/vendor/bootstrap/js/bootstrap.js"></script>
-    <script src="/static/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
     <script src="/static/vendor/common/common.js"></script>
     <script src="/static/vendor/nanoscroller/nanoscroller.js"></script>
     <script src="/static/vendor/magnific-popup/jquery.magnific-popup.js"></script>

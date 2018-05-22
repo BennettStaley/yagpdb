@@ -2,8 +2,8 @@
 <!-- start: header -->
 <header class="header">
     <div class="logo-container">
-        <a href="../2.1.1" class="logo">
-            <img src="img/logo.png" width="75" height="35" alt="Porto Admin" />
+        <a href="/manage" class="logo">
+            <!-- <img src="img/logo.png" width="75" height="35" alt="Porto Admin" /> -->
         </a>
         <div class="d-md-none toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
             <i class="fas fa-bars" aria-label="Toggle sidebar"></i>
@@ -180,7 +180,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-parent nav-expanded">
+                    <li class="nav-parent   ">
                         <a class="nav-link" href="#">
                             <i class="fas fa-exclamation" aria-hidden="true"></i>
                             <span>Notifications & Feeds</span>
@@ -261,7 +261,7 @@
                     </li>
                     {{end}}
                     <li>
-                        <a class="nav-link" data-partial-load="true" href="/manage/{{.ActiveGuild.ID}}/stats">
+                        <a class="nav-link" data-partial-load="true" href="#">
                             <i class="fas fa-question" aria-hidden="true"></i>
                             <span>Documentation</span>
                         </a>
@@ -269,21 +269,7 @@
                 </ul>
             </nav>              
         </div>
-        <script>
-            // Maintain Scroll Position
-            if (typeof localStorage !== 'undefined') {
-                if (localStorage.getItem('sidebar-left-position') !== null) {
-                    var initialPosition = localStorage.getItem('sidebar-left-position'),
-                        sidebarLeft = document.querySelector('#sidebar-left .nano-content');
-                    
-                    sidebarLeft.scrollTop = initialPosition;
-                }
-            }
-        </script>
-        
-
     </div>
-
 </aside>
 <!-- end: sidebar -->
 
