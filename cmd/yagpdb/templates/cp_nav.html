@@ -26,6 +26,11 @@
         
         <ul class="notifications">
             <li>
+                <a href="#" onclick="toggleTheme()" target="_blank" class="notification-icon" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Toggle light/dark theme">
+                    <i class="fas fa-lightbulb"></i>
+                </a>
+            </li>
+            <li>
                 <a href="https://discord.gg/0vYlUK2XBKldPSMY" target="_blank" class="notification-icon" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="YAGPDB Community and support server">
                     <i class="fab fa-discord"></i>
                 </a>
@@ -36,7 +41,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="notification-icon" target="_blank" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Documentation">
+                <a href="https://docs.yagpdb.xyz/" class="notification-icon" target="_blank" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Documentation">
                     <i class="fas fa-question"></i>
                 </a>
             </li> 
@@ -49,8 +54,6 @@
                 <figure class="profile-picture">
                     {{if .ActiveGuild}}
                     <img src="https://cdn.discordapp.com/icons/{{.ActiveGuild.ID}}/{{.ActiveGuild.Icon}}?size=64" alt="Server Icon" class="rounded-circle"/>
-                    {{else}}
-                    <img src="img/!logged-user.jpg" alt="Server Icon" class="rounded-circle"/>
                     {{end}}
                 </figure>
                 <div class="profile-info" data-lock-name="Server Name">
@@ -261,7 +264,7 @@
                     </li>
                     {{end}}
                     <li>
-                        <a class="nav-link" data-partial-load="true" href="#">
+                        <a class="nav-link" href="https://docs.yagpdb.xyz/" target="_blank">
                             <i class="fas fa-question" aria-hidden="true"></i>
                             <span>Documentation</span>
                         </a>

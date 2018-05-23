@@ -424,3 +424,15 @@ function createRequest(method, path, data, cb){
         oReq.send();
     }
 }
+
+function toggleTheme(){
+	var elem = document.documentElement;
+	if(elem.classList.contains("dark")){
+		elem.classList.remove("dark");
+		elem.classList.add("sidebar-light")
+		
+	}else{		
+		elem.classList.add("dark");
+		elem.classList.remove("sidebar-light")
+	}
+}

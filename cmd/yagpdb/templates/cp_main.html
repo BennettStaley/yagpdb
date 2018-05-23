@@ -42,6 +42,10 @@
     <link rel="stylesheet" href="/static/vendor/magnific-popup/magnific-popup.css" />
     <link rel="stylesheet" href="/static/vendor/bootstrap-datepicker/css/bootstrap-datepicker3.css" />
 
+    <link rel="stylesheet" href="/static/vendor/select2/css/select2.css" />
+    <link rel="stylesheet" href="/static/vendor/select2-bootstrap-theme/select2-bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/vendor/bootstrap-multiselect/bootstrap-multiselect.css" />
+
     <!-- Theme CSS -->
     <link rel="stylesheet" href="/static/css/theme.css" />
 
@@ -56,6 +60,9 @@
 
     <script src="/static/vendor/jquery/jquery.js"></script>
 
+    {{if .ExtraHead}}
+        {{.ExtraHead}}
+    {{end}}
 
     <!-- Sam is an okay guy i think, i was forced to say this -->
     <!-- deus name is actually dave -->
@@ -101,6 +108,8 @@
     <script src="/static/vendor/nanoscroller/nanoscroller.js"></script>
     <script src="/static/vendor/magnific-popup/jquery.magnific-popup.js"></script>
     <script src="/static/vendor/jquery-placeholder/jquery-placeholder.js"></script>
+    <script src="/static/vendor/select2/js/select2.js"></script>
+    <script src="/static/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
     
     <!-- Theme Base, Components and Settings -->
     <script src="/static/js/theme.js"></script>
