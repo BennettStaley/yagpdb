@@ -6,7 +6,8 @@ $(function(){
 		window.history.replaceState("", "", visibleURL);
 	}
 
-	addListeners(false);
+	addListeners();
+	initPlugins(false);
 
 	window.onpopstate = function (evt, a) {
        	var shouldNav;
@@ -78,7 +79,8 @@ function navigate(url, method, data, updateHistory){
 		lastLoc = shownURL;
 		lastHash = window.location.hash;
 			
-		addListeners(true);
+		initPlugins(true);
+		$(document.body).trigger('ready');
 		
 		if (typeof ga !== 'undefined') {
 			ga('send', 'pageview', window.location.pathname);
@@ -139,16 +141,11 @@ function clearAlerts(){
 	$("#alerts").empty();
 }
 
-function addListeners(partial){
-	var selectorPrefix = "";
-	if (partial) {
-		selectorPrefix = "#main-content ";
-	}
-
+function addListeners(){
 	////////////////////////////////////////
 	// Async partial page loading handling
 	///////////////////////////////////////
-	$( selectorPrefix + '[data-partial-load="true"]' ).click(function( event ) {
+	$(document).on("click", '[data-partial-load="true"]', function( event ) {
 		console.log("Clicked the link");
 		event.preventDefault();
 		
@@ -160,9 +157,38 @@ function addListeners(partial){
 		navigate(url, "GET", null, true);
 	});
 
-	initializeMultiselect(selectorPrefix);
-	formSubmissionEvents(selectorPrefix);
+	formSubmissionEvents();
+
+	$(document).on("click", '[data-toggle="popover"]', function(evt){
+		$('[data-toggle="popover"]').each(function(i, elem){
+			// console.log(elem, elem == evt.target);
+			if (evt.currentTarget == elem) {
+				return;
+			}
+			$(elem).popover('hide');
+		})
+	});
+
+	$(document).on("click", 'a[href^="#"]', function(e) {
+	    e.preventDefault();
+    
+	    navigateToAnchor($.attr(this, "href"));
+ 	})
+}
+
+// Initializes plugins such as multiselect, we have to do this on the new elements each time we load a partial page
+function initPlugins(partial){
+	var selectorPrefix = "";
+	if (partial) {
+		selectorPrefix = "#main-content ";
+	}
+
+	$(selectorPrefix + '[data-toggle="popover"]').popover()
+
+	// The uitlity that checks wether the bot has permissions to send messages in the selected channel
 	channelRequirepermsDropdown(selectorPrefix);
+	yagInitSelect2(selectorPrefix)
+	// initializeMultiselect(selectorPrefix);
 }
 
 var discordPermissions = {
@@ -282,13 +308,13 @@ function initializeMultiselect(selectorPrefix){
 	// $(selectorPrefix+".multiselect").multiselect();
 }
 
-function formSubmissionEvents(selectorPrefix){
+function formSubmissionEvents(){
 	// Form submission fuckery
-	var forms = $(selectorPrefix + "form");
+	$(document).on("submit", "form", submitform);
 	
-	forms.each(function(i, elem){
-		elem.onsubmit = submitform;
-	})
+	// forms.each(function(i, elem){
+	// 	elem.onsubmit = submitform;
+	// })
 
 	function dangerButtonClick(evt){
 		var target = $(evt.target);
@@ -309,19 +335,10 @@ function formSubmissionEvents(selectorPrefix){
 		// alert("aaa")
 	} 
 
-	$(selectorPrefix + ".btn-danger").click(dangerButtonClick)
-	$(selectorPrefix + ".delete-button").click(dangerButtonClick)
+	$(document).on("click", ".btn-danger", dangerButtonClick);
+	$(document).on("click", ".delete-button", dangerButtonClick);
 
-	$(selectorPrefix + '[data-toggle="popover"]').popover()
-	$(selectorPrefix + '[data-toggle="popover"]').click(function(evt){
-		$('[data-toggle="popover"]').each(function(i, elem){
-			// console.log(elem, elem == evt.target);
-			if (evt.currentTarget == elem) {
-				return;
-			}
-			$(elem).popover('hide');
-		})
-	})
+	
 
 	function submitform(evt){
 
@@ -375,20 +392,6 @@ function formSubmissionEvents(selectorPrefix){
 		max = Math.floor(max);
 		return Math.floor(Math.random() * (max - min)) + min;
 	}
-
-	const $navbar = $('.navbar');
-	$(selectorPrefix + 'a[href^="#"]').on('click', function(e) {
-	    e.preventDefault();
-    
-	    navigateToAnchor($.attr(this, "href"));
- 
-	    // e.target.scrollIntoView({"behaviour": "smooth", "block": "end"});
-	    // const scrollTop =
-	    //     $(e).position().top -
-	    //     $navbar.outerHeight();
-
-	    // $('html, body').animate({ scrollTop });
-	})
 }
 
 function navigateToAnchor(name){
