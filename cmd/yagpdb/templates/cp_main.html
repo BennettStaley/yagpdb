@@ -145,24 +145,6 @@
 </div>
 {{end}}
 
-{{/*
-Argumens
-Channels - list of channels
-Selections - List of selections
-<li><input type="radio" id="ID" name="NAME" value="VALUE"><label for="ID">Label</label></li>
-*/}}
-{{define "channel_options_multi"}}
-    {{$selections := .Selections}}
-    {{range .Channels}}{{if eq .Type 0}}<option value="{{.ID}}" {{if $selections}}{{if in $selections (toString .ID)}}selected {{end}}{{end}}>#{{.Name}}</option>
-    {{end}}{{end}}
-{{end}}
-
-{{define "channel_options_multi_int"}}
-    {{$selections := .Selections}}
-    {{range .Channels}}{{if eq .Type 0}}<option value="{{.ID}}" {{if $selections}}{{if in $selections (toInt64 .ID)}}selected {{end}}{{end}}>#{{.Name}}</option>
-    {{end}}{{end}}
-{{end}}
-
 {{/*Help block for templating*/}}
 {{define "template_help"}}
 <p>To include the user or server in the message you can use the template data included, the templating engine used is go's text/template<br/>

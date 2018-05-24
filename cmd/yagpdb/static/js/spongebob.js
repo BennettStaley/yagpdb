@@ -188,6 +188,7 @@ function initPlugins(partial){
 	// The uitlity that checks wether the bot has permissions to send messages in the selected channel
 	channelRequirepermsDropdown(selectorPrefix);
 	yagInitSelect2(selectorPrefix)
+	yagInitMultiSelect(selectorPrefix)
 	// initializeMultiselect(selectorPrefix);
 }
 

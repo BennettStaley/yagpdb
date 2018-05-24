@@ -328,7 +328,7 @@ type ServerStatsConfig struct {
 	Public         bool
 	IgnoreChannels string
 
-	ParsedChannels []string `gorm:"-"`
+	ParsedChannels []int64 `gorm:"-"`
 }
 
 func (c *ServerStatsConfig) GetName() string {
@@ -336,7 +336,13 @@ func (c *ServerStatsConfig) GetName() string {
 }
 
 func (s *ServerStatsConfig) PostFetch() {
-	s.ParsedChannels = strings.Split(s.IgnoreChannels, ",")
+	split := strings.Split(s.IgnoreChannels, ",")
+	for _, v := range split {
+		parsed, err := strconv.ParseInt(v, 10, 64)
+		if err == nil {
+			s.ParsedChannels = append(s.ParsedChannels, parsed)
+		}
+	}
 }
 
 func GetConfig(ctx context.Context, GuildID int64) (*ServerStatsConfig, error) {

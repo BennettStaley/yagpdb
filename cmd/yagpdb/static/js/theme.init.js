@@ -286,30 +286,24 @@
 }).apply(this, [jQuery]);
 
 // MultiSelect
-(function($) {
-
+function yagInitMultiSelect(selectorPrefix) {
 	'use strict';
 
 	if ( $.isFunction( $.fn[ 'multiselect' ] ) ) {
+		$(selectorPrefix + '[data-plugin-multiselect]' ).each(function() {
 
-		$(function() {
-			$( '[data-plugin-multiselect]' ).each(function() {
+			var $this = $( this ),
+				opts = {};
 
-				var $this = $( this ),
-					opts = {};
+			var pluginOptions = $this.data('plugin-options');
+			if (pluginOptions)
+				opts = pluginOptions;
 
-				var pluginOptions = $this.data('plugin-options');
-				if (pluginOptions)
-					opts = pluginOptions;
+			$this.themePluginMultiSelect(opts);
 
-				$this.themePluginMultiSelect(opts);
-
-			});
 		});
-
 	}
-
-}).apply(this, [jQuery]);
+}
 
 (function($) {
 
