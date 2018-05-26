@@ -1,67 +1,75 @@
 {{define "cp_reddit"}}
 
 {{template "cp_head" .}}
-<div class="row">
-    <div class="col-lg-12">
-        <h1 class="page-header">Reddit</h1>
-        <p>The Reddit plugin will post posts from subreddits in your discord server</p>
-    </div>
-    <!-- /.col-lg-12 -->
-</div>
+<header class="page-header">
+    <h2>Reddit feeds</h2>
+</header>
+
 {{template "cp_alerts" .}}
 <!-- /.row -->
 <div class="row">
     <div class="col-lg-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Add new feed
-            </div>
-            <div class="panel-body">
+        <section class="card">
+            <header class="card-header">
+                <h2 class="card-title">Add new feed</h2>
+            </header>
+            <div class="card-body">
+                <p>Reddit feeds will post posts from subreddits in your discord server</p>
                 <p>The subreddit field is just the name of the subreddit (no /r/ in front of it), examples: "games", "multicopter"
                 <form class="form-inline" method="post" action="/manage/{{.ActiveGuild.ID}}/reddit">
-                    <div class="form-group">
-                        <label for="subreddit">Subreddit</label>
-                        <input type="text" class="form-control" id="subreddit" name="subreddit" placeholder="howdoismell">
-                    </div>
-                    <div class="form-group">
-                        <label for="channel">Server Channel</label>
-                        <select id="channel" class="form-control" name="channel" data-requireperms-embed>
-                            {{textChannelOptions .ActiveGuild.Channels}}
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-default">Add</button>
+                    <label for="new-subreddit">Subreddit</label>
+                    <input type="text" class="form-control mx-2" id="new-subreddit" name="subreddit" placeholder="discord_irl">
+
+                    <label for="new-channel">Server Channel</label>
+                    <select id="new-channel" class="form-control mx-2" name="channel" data-requireperms-embed>
+                        {{textChannelOptions .ActiveGuild.Channels 0 false ""}}
+                    </select>
+
+                    <button type="submit" class="btn btn-success ml-4">Add</button>
                 </form>
             </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Current subreddits
+        </section>
+        <section class="card">
+            <header class="card-header">
+                <h2 class="card-title">Current subreddits</h2>
+            </header>
+            <div class="card-body">
+                <table class="table table-responsive-md table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th>Subreddit</th>
+                            <th>Discord channel</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {{$guild := .ActiveGuild.ID}}
+                        {{$channels := .ActiveGuild.Channels}}
+                        {{range .RedditConfig}}
+                        <tr>
+                            <form class="was-validated" method="post" action="/manage/{{$guild}}/reddit/{{.ID}}/update">
+                                <input type="text" class="hidden" name="id" value="{{.ID}}">
+                                <td>
+                                    <input type="text" class="form-control" id="subreddit-{{.ID}}" name="subreddit" placeholder="" value="{{.Sub}}">
+                                </td>
+                                <td>
+                                    <select id="channel" class="form-control" name="channel" data-requireperms-embed>
+                                       {{textChannelOptions $channels .Channel false ""}}
+                                    </select>
+                                </td>
+                                <td>
+                                    <button type="submit" class="btn btn-success ml-sm-3" formaction="/manage/{{$guild}}/reddit/{{.ID}}/update">Save</button>
+                                    <button type="submit" class="btn btn-danger" formaction="/manage/{{$guild}}/reddit/{{.ID}}/delete">Delete</button>
+                                </td>
+                            </form>
+                        </tr>
+                        {{end}}
+
+                    </tbody>
+                </table>
             </div>
-            <div class="panel-body">
-                {{$guild := .ActiveGuild.ID}}
-                {{$channels := .ActiveGuild.Channels}}
-                {{range .RedditConfig}}
-                <div class="well well-sm">
-                    <form class="form-inline" method="post" action="/manage/{{$guild}}/reddit/{{.ID}}/update">
-                        <input type="text" class="hidden form-control" name="id" value="{{.ID}}">
-                        <div class="form-group">
-                            <label for="subreddit">Subreddit</label>
-                            <input type="text" class="form-control" id="subreddit" name="subreddit" placeholder="" value="{{.Sub}}">
-                        </div>
-                        <div class="form-group">
-                            <label for="channel">Channel</label>
-                            <select id="channel" class="form-control" name="channel" data-requireperms-embed>
-                                {{textChannelOptions $channels .Channel}}
-                            </select>
-                        </div>
-                        <!-- Fucking html only allows get and post asduiojasdiojasdiojaodi this is 2016 for fucks sake -->
-                        <button type="submit" class="btn btn-success" formaction="/manage/{{$guild}}/reddit/{{.ID}}/update">Save</button>
-                        <button type="submit" class="btn btn-danger" formaction="/manage/{{$guild}}/reddit/{{.ID}}/delete">Delete</button>
-                    </form>
-                </div>
-                {{end}}
-            </div>
-        </div>
+        </section>
         <!-- /.panel -->
     </div>
     <!-- /.col-lg-12 -->

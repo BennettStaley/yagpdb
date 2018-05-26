@@ -160,7 +160,7 @@ func tmplRoleDropdownMutli(roles []*discordgo.Role, highestBotRole *discordgo.Ro
 	return template.HTML(output)
 }
 
-func tmplChannelOpts(channels []*discordgo.Channel, selection int64, allowEmpty bool, emptyName string) template.HTML {
+func tmplChannelOpts(channels []*discordgo.Channel, selection interface{}, allowEmpty bool, emptyName string) template.HTML {
 
 	const unknownName = "Deleted channel"
 
@@ -179,8 +179,14 @@ func tmplChannelOpts(channels []*discordgo.Channel, selection int64, allowEmpty 
 		builder.WriteString(">" + template.HTMLEscapeString(emptyName) + "</option>")
 	}
 
+	var selections []int64
+	intSel := templates.ToInt64(selection)
+	if intSel != 0 {
+		selections = []int64{intSel}
+	}
+
 	// Generate the rest of the options, which is the same as multi but with a single selections
-	builder.WriteString(string(tmplChannelOptsMulti(channels, []int64{selection})))
+	builder.WriteString(string(tmplChannelOptsMulti(channels, selections)))
 
 	return template.HTML(builder.String())
 }

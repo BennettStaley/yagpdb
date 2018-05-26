@@ -18,6 +18,7 @@ type FormData struct {
 }
 
 func (p *Plugin) InitWeb() {
+
 	web.Templates = template.Must(web.Templates.Parse(FSMustString(false, "/assets/serverstats.html")))
 
 	statsCPMux := goji.SubMux()

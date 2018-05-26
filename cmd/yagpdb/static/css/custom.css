@@ -1,1 +1,6 @@
 /* Add here all your CSS customizations */
+
+.multiselect-container {
+	/* So that the navbar dosen't go above the dropdown menus*/
+	z-index: 1000000;
+}

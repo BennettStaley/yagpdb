@@ -220,15 +220,16 @@ function channelRequirepermsDropdown(prefix){
 }
 
 function trackChannelDropdown(dropdown, perms){
-	var currentElem = $('<div class="form-group"><p class="text-danger form-control-static">Checking...</p></div>');
-	dropdown.parent().after(currentElem);
+	var currentElem = $('<p class="form-control-static">Checking channel permissions for bot...</p>');
+	dropdown.after(currentElem);
 
 	dropdown.on("change", function(){
 		check();
 	})
 
 	function check(){
-		currentElem.text("Checking...");
+		currentElem.text("Checking channel permissions for bot...");
+		currentElem.removeClass("text-success", "text-danger");
 		var currentSelected = dropdown.val();
 		if(!currentSelected){
 			currentElem.text("");
@@ -264,10 +265,10 @@ function validateChannelDropdown(dropdown, currentElem, channel, perms){
 					if(decoded.message){
 						currentElem.text(decoded.message);
 					}else{
-						currentElem.text("Something went wrong");
+						currentElem.text("Couldn't check permissions :(");
 					}
 				}else{
-					currentElem.text("Something went wrong");
+					currentElem.text("Couldn't check permissions :(");
 				}
 				cachedChannelPerms[channel] = null;
 				return;
@@ -295,7 +296,7 @@ function validateChannelDropdown(dropdown, currentElem, channel, perms){
 			// Has perms
 			currentElem.removeClass("text-danger");
 			currentElem.addClass("text-success");
-			currentElem.text("OK Perms");
+			currentElem.text("");
 		}else{
 			currentElem.addClass("text-danger");
 			currentElem.removeClass("text-success");
