@@ -1,3 +1,6 @@
+package reputation
+
+const DBSchema = `
 -- DROP TABLE IF EXISTS reputation_configs;
 
 CREATE TABLE IF NOT EXISTS reputation_configs (
@@ -42,3 +45,4 @@ CREATE TABLE IF NOT EXISTS reputation_log (
 CREATE INDEX IF NOT EXISTS reputation_log_guild_idx ON reputation_log (guild_id);
 CREATE INDEX IF NOT EXISTS reputation_log_sender_idx ON reputation_log (sender_id);
 CREATE INDEX IF NOT EXISTS reputation_log_receiver_idx ON reputation_log (receiver_id);	
+`

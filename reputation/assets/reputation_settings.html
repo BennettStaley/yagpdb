@@ -1,27 +1,26 @@
 {{define "cp_reputation_settings"}}
-
 {{template "cp_head" .}}
-<div class="row">
-    <div class="col-lg-12">
-        <h1 class="page-header">Reputation Settings</h1>
-        <p>Settings for the reputation system. <a href="/public/{{.ActiveGuild.ID}}/reputation/leaderboard">Leaderboards</a></p>
-    </div>
-    <!-- /.col-lg-12 -->
+
+<div class="page-header">
+    <h2>Reputation settings - <a href="/public/{{.ActiveGuild.ID}}/reputation/leaderboard">Leaderboards</a></h2>
 </div>
+
 {{template "cp_alerts" .}}
-<!-- /.row -->
+
 <div class="row">
     <div class="col-lg-12">
         <form role="form" method="post">
-            <div class="panel {{if .RepSettings.Enabled}}panel-green{{else}}panel-default{{end}}">
-                <div class="panel-heading">
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" name="Enabled" {{if .RepSettings.Enabled}} checked{{end}}>Reputation Enabled
+            <section class="card {{if .RepSettings.Enabled}}card-featured card-featured-success{{end}}">
+                <header class="card-header">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="rep-enabled-check" name="Enabled" {{if .RepSettings.Enabled}} checked{{end}}>
+                        <label class="form-check-label" for="rep-enabled-check">
+                            <h2 class="card-title">Reputation enabled</h2>
                         </label>
                     </div>
-                </div>
-                <div class="panel-body">
+                </header>
+
+                <div class="card-body">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="form-group">
@@ -78,7 +77,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
             <!-- /.panel -->
         </form>
         <!-- /form -->
