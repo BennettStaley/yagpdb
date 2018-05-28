@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 )
 
 type DeleteData struct {
@@ -186,13 +185,14 @@ func HandleLogsHTML(w http.ResponseWriter, r *http.Request) interface{} {
 		return tmpl.AddAlerts(web.ErrorAlert("Couldn't find the logs im so sorry please dont hurt me i have a family D:"))
 	}
 
+	const TimeFormat = "2006 Jan 02 15:04"
 	for k, v := range msgLogs.Messages {
 		parsed, err := discordgo.Timestamp(v.Timestamp).Parse()
 		if err != nil {
 			logrus.WithError(err).Error("Failed parsing logged message timestamp")
 			continue
 		}
-		ts := parsed.UTC().Format(time.RFC822)
+		ts := parsed.UTC().Format(TimeFormat)
 		msgLogs.Messages[k].Timestamp = ts
 	}
 

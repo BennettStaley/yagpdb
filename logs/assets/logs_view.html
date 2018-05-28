@@ -1,27 +1,6 @@
 {{define "public_server_logs"}}
 
 {{template "cp_head" .}}
-<style type="text/css">
-
-    @media(min-width: 768px) {
-        table {
-            table-layout:fixed;
-            /*width:100%;*/
-            font-size: 0.9em;
-            word-break: break-all;
-        }
-        
-        #msg-col {width:100%; min-width: 100px;} /*Setting the width of column 3.*/
-        #time-col {width:150px;}/*Setting the width of column 1.*/
-        #author-col {width:200px;}/*Setting the width of column 2.*/
-        #actions-col {width:100px;}/*Setting the width of column 3.*/
-    }
-    
-    .deleted-message{
-        color: red;
-    }
-</style>
-
 <header class="page-header">
     <form action="/manage/{{.ActiveGuild.ID}}/logging/fulldelete" method="post">
         <h2>Message logs for {{.ActiveGuild.Name}} #{{.Logs.ChannelName}} <small>(ID: {{.Logs.ChannelID}})</small>{{if .IsAdmin}} <input type="submit" class="btn btn-lg btn-danger" value="Delete" />{{end}}</h2>
@@ -35,10 +14,10 @@
         <table class="table table-hover table-striped table-responsive-md" id="log-table">
             <thead>
                 <tr>
-                    <th id="time-col">Time (UTC) <i class="fa fa-caret-up"></i></th>
-                    <th id="author-col">Author</th>
-                    <th id="msg-col">Message</th>{{if .IsAdmin}}
-                    <th id="actions-col">Actions</th>{{end}}
+                    <th>Time (UTC) <i class="fa fa-caret-up"></i></th>
+                    <th>Author</th>
+                    <th>Message</th>{{if .IsAdmin}}
+                    <th>Actions</th>{{end}}
                 </tr>
             </thead>
 
@@ -47,7 +26,7 @@
                 {{$CanViewDeleted := .CanViewDeleted}}
                 {{range $i, $v := .Logs.Messages}}
                 <tr id="log-row-{{$i}}" class="popover-trigger log-row" data-toggle="popover" data-trigger="click" title="Message info" data-placement="top"  data-content="Author ID: {{.AuthorID}} Message ID: {{.MessageID}}">
-                    <td>{{.Timestamp}}</td>
+                    <td class="text-nowrap">{{.Timestamp}}</td>
                     <td>{{.AuthorUsername}}#{{.AuthorDiscrim}}</td>
                     <td id="msg-cell-{{.ID}}" {{if .Deleted}} class="deleted-message" {{end}}>{{if or (not .Deleted) $CanViewDeleted}}{{.Content}}{{else}}This message has been removed from logs. only admins can see it.{{end}}</td>{{if $IsAdmin}}
                     <td>{{if not .Deleted}}<button id="msg-button-{{.ID}}" class="btn btn-sm btn-danger" noconfirm onclick="deleteMessage('{{.ID}}')">Delete</button>{{end}}</td>{{end}}
