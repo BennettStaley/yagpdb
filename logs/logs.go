@@ -1,7 +1,5 @@
 package logs
 
-//go:generate esc -o assets_gen.go -pkg logs -ignore ".go" assets/
-
 import (
 	"errors"
 	"fmt"
