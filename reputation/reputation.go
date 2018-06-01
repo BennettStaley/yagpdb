@@ -1,7 +1,6 @@
 package reputation
 
 //go:generate sqlboiler --no-hooks -w "reputation_configs,reputation_users,reputation_log" postgres
-//go:generate esc -o assets_gen.go -pkg reputation -ignore ".go" assets/
 
 import (
 	"database/sql"
