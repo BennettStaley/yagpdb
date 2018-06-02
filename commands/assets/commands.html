@@ -173,7 +173,7 @@
 </div>
 <div class="form-row">
     <div class="form-group col-md-2">
-        <div class="checkbox-custom checkbox-primary mt-20">
+        <div class="checkbox-custom checkbox-primary mt-3">
             <input type="checkbox" checked="" id="commands-enabled">
             <label for="commands-enabled">Commands enabled</label>
         </div>
@@ -201,69 +201,86 @@
         </div>
     </div>
 </div>
-<div class="row border-top border-info pt-4">
+{{if .Override}}
+<div class="row pt-4">
     <div class="col">
-        <header class="card-header">
-            <h2 class="card-title">New command override</h2>
-        </header>
-        <div class="card">
-            <div class="card-body">
-                <div class="form-row">
-                    <div class="form-group col-md-2">
-                        <div class="checkbox-custom checkbox-primary mt-20">
-                            <input type="checkbox" checked="" id="commands-enabled">
-                            <label for="commands-enabled">Commands enabled</label>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-10">
-                        <label>Apply to the following commands</label><br>
-                        <select multiple="multiple" class="form-control" data-plugin-multiselect>
-                            {{range .Commands}}
-                            <option value="{{.}}">{{.}}</option>
-                            {{end}}
-                        </select>
-                    </div>
+        {{mTemplate "ActiveGuild" .ActiveGuild "Parent" .Override "Commands" .Commands}}
+    </div>
+</div>
+{{end}}
+{{end}}
+
+{{/*Expects: 
+    .Parent (ChannelOverride)
+    .Override (or nil)
+    .ActiveGuild
+    .Commands
+    .ID
+*/}}
+{{define "commands_command_override"}}
+<div class="card border border-secondary rounded">
+    <header class="card-header">
+        {{if .Override}}
+        <h2 class="card-title">New command override</h2>
+        {{else}}
+        <h2 class="card-title">New command override</h2>
+        {{end}}
+    </header>
+    <div class="card-body">
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <div class="checkbox-custom checkbox-primary mt-20">
+                    <input type="checkbox" checked="" id="commands-enabled">
+                    <label for="commands-enabled">Commands enabled</label>
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label>Require one of these roles</label><br>
-                        <select multiple="multiple" class="form-control" data-plugin-multiselect>
-                            <option>TODO</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label>Ignore users with one of these roles</label><br>
-                        <select multiple="multiple" class="form-control" data-plugin-multiselect>
-                            <option>TODO</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label>Autodelete trigger after (seconds)</label>
-                        <div class="input-group mb-3">
-                            <span class="input-group-prepend">
-                                <span class="input-group-text">
-                                    <input type="checkbox">
-                                </span>
-                            </span>
-                            <input type="number" class="form-control" placeholder="Seconds..." value="10">
-                        </div>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label>Autodelete response after (seconds)</label>
-                        <div class="input-group mb-3">
-                            <span class="input-group-prepend">
-                                <span class="input-group-text">
-                                    <input type="checkbox">
-                                </span>
-                            </span>
-                            <input type="number" class="form-control" placeholder="Seconds..." value="10">
-                        </div>
-                    </div>
-                </div>                
+            </div>
+            <div class="form-group col-md-10">
+                <label>Apply to the following commands</label><br>
+                <select multiple="multiple" class="form-control" data-plugin-multiselect>
+                    {{range .Commands}}
+                    <option value="{{.}}">{{.}}</option>
+                    {{end}}
+                </select>
             </div>
         </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Require one of these roles</label><br>
+                <select multiple="multiple" class="form-control" data-plugin-multiselect>
+                    <option>TODO</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label>Ignore users with one of these roles</label><br>
+                <select multiple="multiple" class="form-control" data-plugin-multiselect>
+                    <option>TODO</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Autodelete trigger after (seconds)</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-prepend">
+                        <span class="input-group-text">
+                            <input type="checkbox">
+                        </span>
+                    </span>
+                    <input type="number" class="form-control" placeholder="Seconds..." value="10">
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label>Autodelete response after (seconds)</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-prepend">
+                        <span class="input-group-text">
+                            <input type="checkbox">
+                        </span>
+                    </span>
+                    <input type="number" class="form-control" placeholder="Seconds..." value="10">
+                </div>
+            </div>
+        </div>                
     </div>
 </div>
 {{end}}
