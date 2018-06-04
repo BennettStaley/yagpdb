@@ -25,12 +25,12 @@
                 </ul>
                 <div class="tab-content">
                     <div id="global-settings" class="tab-pane active show">
-                        <form method="post" action="/manage/{{.ActiveGuild.ID}}/commands/settings/?global=true">
+                        <form method="post" action="/manage/{{.ActiveGuild.ID}}/commands/settings/general">
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label for="prefix">Prefix</label>
-                                        <input type="text" class="form-control" id="prefix" name="prefix" value="{{.CommandConfig.Prefix}}">
+                                        <input type="text" class="form-control" id="prefix" name="Prfeix" value="{{.CommandPrefix}}">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -39,25 +39,22 @@
                             </div>
                             <div class="row mt-4">
                                 <div class="col-lg-12">
-                                    <button type="submit" class="btn btn-primary btn-lg btn-block" >Save global Settings</button>   
-                                </div>
-                            </div>
-
-                            <div class="row mt-4 border-top border-info pt-4">
-                                <div class="col-lg-12">
-                                    {{mTemplate "commands_channel_override" "ActiveGuild" .ActiveGuild "Commands" .Commands "Override" .GlobalCommandSettings}}
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block" >Save Prefix</button>   
                                 </div>
                             </div>
                         </form>
+                        <div class="row mt-4 border-top border-info pt-4">
+                            <div class="col-lg-12">
+                                {{mTemplate "commands_channel_override" "ActiveGuild" .ActiveGuild "Commands" .SortedCommands "Override" .GlobalCommandSettings}}
+                            </div>
+                        </div>
                     </div>
                     {{$dot := .}}
                     {{range .ChannelOverrides}}
-                    <div id="override-#{{.ID}}" class="tab-pane">
+                    <div id="override-{{.ID}}" class="tab-pane">
                         <div class="row mt-4">
                             <div class="col-lg-12">
-                                <form>
-                                {{mTemplate "commands_channel_override" "ActiveGuild" $dot.ActiveGuild "Commands" $dot.Commands "Override" .}}
-                                </form>
+                                {{mTemplate "commands_channel_override" "ActiveGuild" $dot.ActiveGuild "Commands" $dot.SortedCommands "Override" .}}
                             </div>
                         </div>
                     </div>
@@ -65,9 +62,7 @@
                     <div id="new-override" class="tab-pane">
                         <div class="row mt-4">
                             <div class="col-lg-12">
-                                <form>
-                                {{mTemplate "commands_channel_override" "ActiveGuild" .ActiveGuild "Commands" .Commands}}
-                                </form>
+                                {{mTemplate "commands_channel_override" "ActiveGuild" .ActiveGuild "Commands" .SortedCommands}}
                             </div>
                         </div>
                     </div>
@@ -140,71 +135,84 @@
     .Commands
 */}}
 {{define "commands_channel_override"}}
-{{if not .Global}}
-<div class="form-row">
-    <div class="form-group col-md-6">
-        <label>Channels this override affects</label><br>
-        <select multiple="multiple" class="form-control" data-plugin-multiselect>
-            <option>TODO</option>
-        </select>
-    </div>
-    <div class="form-group col-md-6">
-        <label>Include current and future channels from the following categories</label><br>
-        <select multiple="multiple" class="form-control" data-plugin-multiselect>
-            <option>TODO</option>
-        </select>
-    </div>
-</div>
+{{if .Override}}
+<form method="POST" action="/manage/{{.ActiveGuild.ID}}/commands/settings/channel_overrides/{{if .Override.Global}}global{{else}}{{.Override.ID}}{{end}}/update">
+{{else}}
+<form method="POST" action="/manage/{{.ActiveGuild.ID}}/commands/settings/channel_overrides/new">
 {{end}}
 
-<div class="form-row">
-    <div class="form-group col-md-6">
-        <label>Require one of these roles</label><br>
-        <select multiple="multiple" class="form-control" data-plugin-multiselect>
-            <option>TODO</option>
-        </select>
-    </div>
-    <div class="form-group col-md-6">
-        <label>Ignore users with one of these roles</label><br>
-        <select multiple="multiple" class="form-control" data-plugin-multiselect>
-            <option>TODO</option>
-        </select>
-    </div>
-</div>
-<div class="form-row">
-    <div class="form-group col-md-2">
-        <div class="checkbox-custom checkbox-primary mt-3">
-            <input type="checkbox" checked="" id="commands-enabled">
-            <label for="commands-enabled">Commands enabled</label>
+    {{if not .Override.Global}}
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>Channels this override affects</label><br>
+            <select multiple="multiple" class="form-control" data-plugin-multiselect name="Channels">
+                {{textChannelOptionsMulti .ActiveGuild.Channels .Override.Channels }}
+            </select>
+        </div>
+        <div class="form-group col-md-6">
+            <label>Include current and future channels from the following categories</label><br>
+            <select multiple="multiple" class="form-control" data-plugin-multiselect name="Categories">
+                <option>TODO</option>
+            </select>
         </div>
     </div>
-    <div class="form-group col-md-5">
-        <label>Autodelete trigger after (seconds)</label>
-        <div class="input-group mb-3">
-            <span class="input-group-prepend">
-                <span class="input-group-text">
-                    <input type="checkbox">
+    {{end}}
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>Require one of these roles</label><br>
+            <select multiple="multiple" class="form-control" data-plugin-multiselect name="RequireRoles">
+                {{roleOptionsMulti .ActiveGuild.Roles nil .Override.RequireRoles}}
+            </select>
+        </div>
+        <div class="form-group col-md-6">
+            <label>Ignore users with one of these roles</label><br>
+            <select multiple="multiple" class="form-control" data-plugin-multiselect name="IgnoreRoles">
+                {{roleOptionsMulti .ActiveGuild.Roles nil .Override.IgnoreRoles}}
+            </select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-2">
+            <div class="checkbox-custom checkbox-primary mt-3">
+                <input type="checkbox" id="commands-enabled-{{.Parent.ID}}-{{.Override.ID}}" name="CommandsEnabled" {{if .Override.CommandsEnabled}}checked{{end}}>
+                <label for="commands-enabled-{{.Parent.ID}}-{{.Override.ID}}">Commands enabled</label>
+            </div>
+        </div>
+        <div class="form-group col-md-5">
+            <label>Autodelete trigger after (seconds)</label>
+            <div class="input-group mb-3">
+                <span class="input-group-prepend">
+                    <span class="input-group-text">
+                        <input type="checkbox" name="AutodeleteTrigger" {{if .Override.AutodeleteTrigger}}checked{{end}}>
+                    </span>
                 </span>
-            </span>
-            <input type="number" class="form-control" placeholder="Seconds..." value="10">
+                <input type="number" class="form-control" placeholder="Seconds..." value="{{if .Override}}{{.Override.AutodeleteTriggerDelay}}{{else}}10{{end}}" name="AutodeleteTriggerDelay">
+            </div>
         </div>
-    </div>
-    <div class="form-group col-md-5">
-        <label>Autodelete response after (seconds)</label>
-        <div class="input-group mb-3">
-            <span class="input-group-prepend">
-                <span class="input-group-text">
-                    <input type="checkbox">
+        <div class="form-group col-md-5">
+            <label>Autodelete response after (seconds)</label>
+            <div class="input-group mb-3">
+                <span class="input-group-prepend">
+                    <span class="input-group-text">
+                        <input type="checkbox" name="AutodeleteResponse" {{if .Override.AutodeleteResponse}}checked{{end}}>
+                    </span>
                 </span>
-            </span>
-            <input type="number" class="form-control" placeholder="Seconds..." value="10">
+                <input type="number" class="form-control" placeholder="Seconds..." value="{{if .Override}}{{.Override.AutodeleteResponseDelay}}{{else}}10{{end}}" name="AutodeleteResponseDelay">
+            </div>
         </div>
     </div>
-</div>
+    {{if .Override}}
+    <input type="submit" class="btn btn-success" value="Save">
+    <input type="submit" class="btn btn-danger" value="Delete" formaction="/manage/{{.ActiveGuild.ID}}/commands/settings/channel_overrides/{{if .Override.Global}}global{{else}}{{.Override.ID}}{{end}}/delete">
+    {{else}}
+    <input type="submit" class="btn btn-success" value="Create">
+    {{end}}
+</form>
 {{if .Override}}
 <div class="row pt-4">
     <div class="col">
-        {{mTemplate "ActiveGuild" .ActiveGuild "Parent" .Override "Commands" .Commands}}
+        {{mTemplate "commands_command_override" "ActiveGuild" .ActiveGuild "Parent" .Override "Commands" .Commands}}
     </div>
 </div>
 {{end}}
@@ -218,69 +226,86 @@
     .ID
 */}}
 {{define "commands_command_override"}}
-<div class="card border border-secondary rounded">
-    <header class="card-header">
-        {{if .Override}}
-        <h2 class="card-title">New command override</h2>
-        {{else}}
-        <h2 class="card-title">New command override</h2>
-        {{end}}
-    </header>
-    <div class="card-body">
-        <div class="form-row">
-            <div class="form-group col-md-2">
-                <div class="checkbox-custom checkbox-primary mt-20">
-                    <input type="checkbox" checked="" id="commands-enabled">
-                    <label for="commands-enabled">Commands enabled</label>
+{{if .Override}}
+<form method="post" action="/manage/{{.ActiveGuild.ID}}/commands/settings/channel_overrides/{{if .Parent.Global}}gloabl{{else}}{{.Parent.ID}}{{end}}/command_overrides/{{.Override.ID}}/update">
+{{else}}
+<form method="post" action="/manage/{{.ActiveGuild.ID}}/commands/settings/channel_overrides/{{if .Parent.Global}}gloabl{{else}}{{.Parent.ID}}{{end}}/command_overrides/new">
+{{end}}
+
+    <div class="card border border-secondary rounded">
+        <header class="card-header">
+            {{if .Override}}
+            <h2 class="card-title">Override #{{.Override.ID}}</h2>
+            {{else}}
+            <h2 class="card-title">New command override</h2>
+            {{end}}
+        </header>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label>Apply to the following commands</label><br>
+                    <select multiple="multiple" class="form-control" data-plugin-multiselect>
+                        {{range .Commands}}
+                            <optgroup label="{{.Category}}">>
+                                {{range .Commands}}
+                                <option value="{{.}}">{{.}}</option>
+                                {{end}}
+                            </optgroup>
+                        {{end}}
+                    </select>
                 </div>
             </div>
-            <div class="form-group col-md-10">
-                <label>Apply to the following commands</label><br>
-                <select multiple="multiple" class="form-control" data-plugin-multiselect>
-                    {{range .Commands}}
-                    <option value="{{.}}">{{.}}</option>
-                    {{end}}
-                </select>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label>Require one of these roles</label><br>
-                <select multiple="multiple" class="form-control" data-plugin-multiselect>
-                    <option>TODO</option>
-                </select>
-            </div>
-            <div class="form-group col-md-6">
-                <label>Ignore users with one of these roles</label><br>
-                <select multiple="multiple" class="form-control" data-plugin-multiselect>
-                    <option>TODO</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label>Autodelete trigger after (seconds)</label>
-                <div class="input-group mb-3">
-                    <span class="input-group-prepend">
-                        <span class="input-group-text">
-                            <input type="checkbox">
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <div class="checkbox-custom checkbox-primary mt-4">
+                        <input type="checkbox" checked="" id="commands-enabled" name="CommandsEnabled">
+                        <label for="commands-enabled">Commands enabled</label>
+                    </div>
+                </div>
+                <div class="form-group col-md-5">
+                    <label>Autodelete trigger after (seconds)</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-prepend">
+                            <span class="input-group-text">
+                                <input type="checkbox" name="AutoDelTrigger">
+                            </span>
                         </span>
-                    </span>
-                    <input type="number" class="form-control" placeholder="Seconds..." value="10">
+                        <input type="number" class="form-control" placeholder="Seconds..." value="10" name="AutoDelTriggerDelay">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group col-md-6">
-                <label>Autodelete response after (seconds)</label>
-                <div class="input-group mb-3">
-                    <span class="input-group-prepend">
-                        <span class="input-group-text">
-                            <input type="checkbox">
+                <div class="form-group col-md-5">
+                    <label>Autodelete response after (seconds)</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-prepend">
+                            <span class="input-group-text">
+                                <input type="checkbox" name="AutoDelResp">
+                            </span>
                         </span>
-                    </span>
-                    <input type="number" class="form-control" placeholder="Seconds..." value="10">
+                        <input type="number" class="form-control" placeholder="Seconds..." value="10" name="AutoDelRespDelay">
+                    </div>
+                </div>
+            </div>                
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>Require one of these roles</label><br>
+                    <select multiple="multiple" class="form-control" data-plugin-multiselect name="RequireRoles">
+                        <option>TODO</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Ignore users with one of these roles</label><br>
+                    <select multiple="multiple" class="form-control" data-plugin-multiselect name="IgnoreRoles">
+                        <option>TODO</option>
+                    </select>
                 </div>
             </div>
-        </div>                
+            {{if .Override}}
+            <input type="submit" class="btn btn-success" value="Save command override">
+            <input type="button" class="btn btn-danger" value="Delete command override">
+            {{else}}
+            <input type="submit" class="btn btn-success" value="Create command override">
+            {{end}}
+        </div>
     </div>
-</div>
+</form>
 {{end}}

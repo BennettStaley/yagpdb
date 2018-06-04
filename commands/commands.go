@@ -10,6 +10,13 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+type CtxKey int
+
+const (
+	CtxKeyCmdSettings CtxKey = iota
+	CtxKeyChannelOverride
+)
+
 type Plugin struct{}
 
 func RegisterPlugin() {

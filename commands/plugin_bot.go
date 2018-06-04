@@ -13,10 +13,6 @@ import (
 	"time"
 )
 
-type CtxKey int
-
-const CtxKeyCmdSettings CtxKey = iota
-
 var (
 	CommandSystem *dcmd.System
 )
