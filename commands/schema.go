@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS commands_channels_overrides (
 );
 
 CREATE INDEX IF NOT EXISTS commands_channels_overrides_guild_idx ON commands_channels_overrides(guild_id);
+CREATE UNIQUE INDEX IF NOT EXISTS commands_channels_overrides_global_uniquex ON commands_channels_overrides (guild_id) WHERE global;
 
 CREATE TABLE IF NOT EXISTS commands_command_overrides (
 	id BIGSERIAL PRIMARY KEY,
