@@ -39,3 +39,16 @@ html.dark .tabs .nav-link:focus {
 	background-color: #2e353e;
 	border-color: #1d2127;
 }
+
+.indicator::before {
+	content: "●"; 
+}
+
+.indicator-success::before {
+	color: green;
+}
+.indicator-danger::before {
+	color: red;
+}
+
+
