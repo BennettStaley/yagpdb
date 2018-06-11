@@ -435,9 +435,10 @@ function toggleTheme(){
 	if(elem.classList.contains("dark")){
 		elem.classList.remove("dark");
 		elem.classList.add("sidebar-light")
-		
+		document.cookie = "X-Light-Theme=true; max-age=3153600000; path=/"
 	}else{		
 		elem.classList.add("dark");
 		elem.classList.remove("sidebar-light")
+		document.cookie = "X-Light-Theme=false; max-age=3153600000; path=/"
 	}
 }

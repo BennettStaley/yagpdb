@@ -1,5 +1,6 @@
-BEGIN;
+package rolecommands
 
+const DBSchema = `
 CREATE TABLE IF NOT EXISTS role_groups (
 	id bigserial NOT NULL PRIMARY KEY,
 	guild_id bigint NOT NULL,
@@ -50,7 +51,4 @@ CREATE TABLE IF NOT EXISTS role_menu_options (
 );
 
 CREATE INDEX IF NOT EXISTS role_menu_options_role_command_idx ON role_menu_options(role_command_id);
-
-
-COMMIT;
-
+`
